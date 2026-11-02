@@ -89,6 +89,20 @@
         </router-link>
       </nav>
       <div class="sidebar-footer">
+        <button
+          class="theme-toggle"
+          type="button"
+          role="switch"
+          :aria-checked="isDark"
+          :aria-label="isDark ? t('nav.switchToLight') : t('nav.switchToDark')"
+          :title="railCollapsed ? (isDark ? t('nav.switchToLight') : t('nav.switchToDark')) : null"
+          @click="toggleTheme"
+        >
+          <!-- Sun shown in dark mode (action: go light), moon shown in light mode -->
+          <svg v-if="isDark" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 2.5V4.5M10 15.5V17.5M2.5 10H4.5M15.5 10H17.5M4.700 4.700L6.100 6.100M13.900 13.900L15.300 15.300M4.700 15.300L6.100 13.900M13.900 6.100L15.300 4.700"/></svg>
+          <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.500 11.500A7 7 0 0 1 8.500 3.500A7 7 0 1 0 16.500 11.500Z"/></svg>
+          <span class="theme-label">{{ isDark ? t('nav.themeLight') : t('nav.themeDark') }}</span>
+        </button>
         <LanguageSwitcher :collapsed="railCollapsed" />
         <ProfileMenu
           :collapsed="railCollapsed"
@@ -130,6 +144,7 @@ import { useRoute } from 'vue-router'
 import { api } from './api'
 import { useAuth } from './composables/useAuth'
 import { useI18n } from './composables/useI18n'
+import { useTheme } from './composables/useTheme'
 import FilterBar from './components/FilterBar.vue'
 import ProfileMenu from './components/ProfileMenu.vue'
 import ProfileDetailsModal from './components/ProfileDetailsModal.vue'
@@ -148,6 +163,7 @@ export default {
   setup() {
     const { currentUser } = useAuth()
     const { t } = useI18n()
+    const { isDark, toggleTheme } = useTheme()
     const showProfileDetails = ref(false)
     const showTasks = ref(false)
     const sidebarOpen = ref(false)
@@ -263,6 +279,8 @@ export default {
 
     return {
       t,
+      isDark,
+      toggleTheme,
       showProfileDetails,
       showTasks,
       sidebarOpen,
@@ -320,6 +338,18 @@ export default {
   --color-sidebar-border: #1e293b;
   --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
 
+  /* Status tints (badges, alerts) */
+  --color-success-bg: #d1fae5;
+  --color-success-text: #065f46;
+  --color-warning-bg: #fed7aa;
+  --color-warning-text: #92400e;
+  --color-danger-bg: #fecaca;
+  --color-danger-text: #991b1b;
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1e40af;
+  --color-stable-bg: #e0e7ff;
+  --color-stable-text: #3730a3;
+
   /* Motion */
   --transition: 150ms ease;
 
@@ -328,6 +358,78 @@ export default {
   --sidebar-width-collapsed: 64px;
   --content-max-width: 1440px;
   --mobile-bar-height: 56px;
+}
+
+/*
+ * Dark theme: only the semantic tokens are overridden; components consume them via var().
+ * Sidebar tokens stay dark in both themes, so they are adjusted only for contrast against the page.
+ * Status tints use deep translucent-looking fills with light text so green/blue/yellow/red stay distinct.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0b1220;
+  --color-surface: #111a2e;
+  --color-surface-muted: #1a2438;
+  --color-border: #263248;
+  --color-border-strong: #3b4a63;
+  --color-text: #f1f5f9;
+  --color-text-body: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-accent: #3b82f6;
+  --color-accent-soft: #172554;
+  --color-sidebar-bg: #070d1a;
+  --color-sidebar-border: #1a2438;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.55);
+  --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.5);
+
+  --color-success-bg: #064e3b;
+  --color-success-text: #6ee7b7;
+  --color-warning-bg: #78350f;
+  --color-warning-text: #fcd34d;
+  --color-danger-bg: #7f1d1d;
+  --color-danger-text: #fca5a5;
+  --color-info-bg: #1e3a8a;
+  --color-info-text: #93c5fd;
+  --color-stable-bg: #312e81;
+  --color-stable-text: #c7d2fe;
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+/* ---------- Theme toggle (sidebar footer) ---------- */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) 0.875rem;
+  background: transparent;
+  border: 1px solid #334155;
+  border-radius: var(--radius-md);
+  color: var(--color-sidebar-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.theme-toggle:hover {
+  background: var(--color-sidebar-hover);
+  border-color: #475569;
+}
+
+.theme-toggle svg {
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed .theme-toggle {
+  justify-content: center;
+  padding: var(--space-2) 0;
+}
+
+.sidebar.collapsed .theme-label {
+  display: none;
 }
 
 * {
@@ -799,32 +901,32 @@ tbody tr:hover {
 
 .badge.success,
 .badge.increasing {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .badge.warning,
 .badge.medium {
-  background: #fed7aa;
-  color: #92400e;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
 
 .badge.danger,
 .badge.decreasing,
 .badge.high {
-  background: #fecaca;
-  color: #991b1b;
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
 }
 
 .badge.info,
 .badge.low {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
 }
 
 .badge.stable {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--color-stable-bg);
+  color: var(--color-stable-text);
 }
 
 /* ---------- States ---------- */
@@ -836,9 +938,9 @@ tbody tr:hover {
 }
 
 .error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-bg);
+  color: var(--color-danger-text);
   padding: var(--space-4);
   border-radius: var(--radius-md);
   margin: var(--space-4) 0;

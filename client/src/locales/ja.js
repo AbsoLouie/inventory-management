@@ -7,7 +7,11 @@ export default {
     finance: '財務',
     demandForecast: '需要予測',
     companyName: '触媒コンポーネンツ',
-    subtitle: '在庫管理システム'
+    subtitle: '在庫管理システム',
+    switchToDark: 'ダークモードに切り替え',
+    switchToLight: 'ライトモードに切り替え',
+    themeDark: 'ダークモード',
+    themeLight: 'ライトモード'
   },
 
   // Dashboard
