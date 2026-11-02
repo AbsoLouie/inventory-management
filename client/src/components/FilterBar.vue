@@ -4,7 +4,7 @@
       <div class="filters-grid">
         <div class="filter-group">
           <label>{{ t('filters.timePeriod') }}</label>
-          <select v-model="selectedPeriod" class="filter-select">
+          <select v-model="selectedPeriod" class="filter-select select-chevron">
             <option value="all">{{ t('filters.allMonths') }}</option>
             <option value="2025-01">{{ t('months.january') }}</option>
             <option value="2025-02">{{ t('months.february') }}</option>
@@ -23,7 +23,7 @@
 
         <div class="filter-group">
           <label>{{ t('filters.location') }}</label>
-          <select v-model="selectedLocation" class="filter-select">
+          <select v-model="selectedLocation" class="filter-select select-chevron">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="San Francisco">{{ t('warehouses.sanFrancisco') }}</option>
             <option value="London">{{ t('warehouses.london') }}</option>
@@ -33,7 +33,7 @@
 
         <div class="filter-group">
           <label>{{ t('filters.category') }}</label>
-          <select v-model="selectedCategory" class="filter-select">
+          <select v-model="selectedCategory" class="filter-select select-chevron">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="circuit boards">{{ t('categories.circuitBoards') }}</option>
             <option value="sensors">{{ t('categories.sensors') }}</option>
@@ -45,7 +45,7 @@
 
         <div class="filter-group">
           <label>{{ t('filters.orderStatus') }}</label>
-          <select v-model="selectedStatus" class="filter-select">
+          <select v-model="selectedStatus" class="filter-select select-chevron">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="delivered">{{ t('status.delivered') }}</option>
             <option value="shipped">{{ t('status.shipped') }}</option>
@@ -134,12 +134,13 @@ export default {
 }
 
 .filter-select {
-  padding: 0.4rem 0.75rem;
+  /* Chevron comes from the global .select-chevron class; 2rem right padding keeps text clear of it */
+  padding: 0.4rem 2rem 0.4rem 0.75rem;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 0.813rem;
   color: #0f172a;
-  background: white;
+  background-color: white;
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500;

@@ -299,6 +299,9 @@ export default {
   --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
 
+  /* Inset chevron shared by every custom select (see .select-chevron) */
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+
   /* Color */
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
@@ -840,5 +843,19 @@ tbody tr:hover {
   border-radius: var(--radius-md);
   margin: var(--space-4) 0;
   font-size: 0.938rem;
+}
+
+/*
+ * Shared select styling. The native arrow hugs the right border, so hide it and
+ * draw an inset chevron. Components using this class must set a background-color
+ * (not the `background` shorthand, which would wipe the chevron) and keep at
+ * least 2rem of right padding so text never runs under the arrow.
+ */
+.select-chevron {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
 }
 </style>

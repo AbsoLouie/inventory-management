@@ -92,6 +92,7 @@ Replace the top nav with a two-column CSS Grid shell.
 - Type scale: one font stack, readable sizes, restrained weights.
 - Visible keyboard focus rings on links, buttons and inputs.
 - Smooth but short transitions (about 150ms) on hover and active states.
+- Selects: add the global `select-chevron` class (defined in `App.vue`, backed by `--select-chevron`) instead of the native arrow, which hugs the right border. Set `background-color` (never the `background` shorthand, which wipes the chevron) and at least `2rem` of right padding.
 
 ## Step 5: Responsive behavior
 

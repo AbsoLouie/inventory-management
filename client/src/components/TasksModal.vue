@@ -35,7 +35,7 @@
                   <select
                     id="task-priority"
                     v-model="newTask.priority"
-                    class="task-select"
+                    class="task-select select-chevron"
                   >
                     <option value="high">{{ t('priority.high') }}</option>
                     <option value="medium">{{ t('priority.medium') }}</option>
@@ -393,7 +393,10 @@ label {
 
 .task-select {
   cursor: pointer;
-  background: white;
+  /* background-color, not shorthand: the global .select-chevron supplies background-image */
+  background-color: white;
+  /* Keep text clear of the chevron; must follow the shared padding rule above */
+  padding-right: 2rem;
 }
 
 .task-add-btn {
