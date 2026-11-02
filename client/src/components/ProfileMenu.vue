@@ -1,7 +1,9 @@
 <template>
-  <div class="profile-menu">
+  <div class="profile-menu" :class="{ collapsed }">
     <button
       class="profile-button"
+      :title="collapsed ? currentUser.name : null"
+      :aria-label="collapsed ? currentUser.name : null"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
@@ -80,6 +82,10 @@ import { useI18n } from '../composables/useI18n'
 
 const { currentUser, logout, getInitials } = useAuth()
 const { t } = useI18n()
+
+defineProps({
+  collapsed: { type: Boolean, default: false }
+})
 
 const isDropdownOpen = ref(false)
 const emit = defineEmits(['show-profile-details', 'show-tasks'])
@@ -285,5 +291,23 @@ const handleLogout = () => {
   border-radius: 12px;
   min-width: 20px;
   text-align: center;
+}
+
+/* Icons-only rail: avatar-only button, dropdown opens to the right of the rail */
+.collapsed .profile-button {
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.collapsed .profile-name,
+.collapsed .chevron {
+  display: none;
+}
+
+.collapsed .dropdown-menu {
+  bottom: 0;
+  left: calc(100% + 0.75rem);
+  right: auto;
+  width: 260px;
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
-  <div class="language-switcher">
+  <div class="language-switcher" :class="{ collapsed }">
     <button
       class="language-button"
+      :title="collapsed ? localeName : null"
+      :aria-label="collapsed ? `Language: ${localeName}` : null"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
@@ -11,6 +13,7 @@
         viewBox="0 0 20 20"
         fill="none"
         class="globe-icon"
+        aria-hidden="true"
       >
         <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
         <path d="M3 10H17" stroke="currentColor" stroke-width="1.5"/>
@@ -20,6 +23,7 @@
       <span class="language-label">{{ localeName }}</span>
       <svg
         class="chevron"
+        aria-hidden="true"
         :class="{ 'chevron-open': isDropdownOpen }"
         width="16"
         height="16"
@@ -57,6 +61,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from '../composables/useI18n'
+
+defineProps({
+  collapsed: { type: Boolean, default: false }
+})
 
 const { currentLocale, setLocale, availableLocales, localeName } = useI18n()
 
@@ -181,5 +189,23 @@ const selectLanguage = (locale) => {
 .check-icon {
   color: #2563eb;
   flex-shrink: 0;
+}
+
+/* Icons-only rail: compact button, dropdown opens to the right of the rail */
+.collapsed .language-button {
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.collapsed .language-label,
+.collapsed .chevron {
+  display: none;
+}
+
+.collapsed .dropdown-menu {
+  bottom: 0;
+  left: calc(100% + 0.75rem);
+  right: auto;
+  min-width: 160px;
 }
 </style>
