@@ -1,7 +1,9 @@
 <template>
-  <div class="profile-menu">
+  <div class="profile-menu" :class="{ collapsed }">
     <button
       class="profile-button"
+      :title="collapsed ? currentUser.name : null"
+      :aria-label="collapsed ? currentUser.name : null"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
@@ -81,6 +83,10 @@ import { useI18n } from '../composables/useI18n'
 const { currentUser, logout, getInitials } = useAuth()
 const { t } = useI18n()
 
+defineProps({
+  collapsed: { type: Boolean, default: false }
+})
+
 const isDropdownOpen = ref(false)
 const emit = defineEmits(['show-profile-details', 'show-tasks'])
 
@@ -124,18 +130,19 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  width: 100%;
   padding: 0.5rem 0.875rem;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: 1px solid #334155;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   font-family: inherit;
 }
 
 .profile-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.12);
+  border-color: #475569;
 }
 
 .avatar {
@@ -155,11 +162,18 @@ const handleLogout = () => {
 .profile-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #0f172a;
+  color: #e2e8f0;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chevron {
-  color: #64748b;
+  color: #94a3b8;
+  flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 
@@ -169,9 +183,9 @@ const handleLogout = () => {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  bottom: calc(100% + 0.5rem);
+  left: 0;
   right: 0;
-  min-width: 280px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
@@ -277,5 +291,23 @@ const handleLogout = () => {
   border-radius: 12px;
   min-width: 20px;
   text-align: center;
+}
+
+/* Icons-only rail: avatar-only button, dropdown opens to the right of the rail */
+.collapsed .profile-button {
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.collapsed .profile-name,
+.collapsed .chevron {
+  display: none;
+}
+
+.collapsed .dropdown-menu {
+  bottom: 0;
+  left: calc(100% + 0.75rem);
+  right: auto;
+  width: 260px;
 }
 </style>

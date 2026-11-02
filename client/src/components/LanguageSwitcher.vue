@@ -1,7 +1,9 @@
 <template>
-  <div class="language-switcher">
+  <div class="language-switcher" :class="{ collapsed }">
     <button
       class="language-button"
+      :title="collapsed ? localeName : null"
+      :aria-label="collapsed ? `Language: ${localeName}` : null"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
@@ -11,6 +13,7 @@
         viewBox="0 0 20 20"
         fill="none"
         class="globe-icon"
+        aria-hidden="true"
       >
         <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
         <path d="M3 10H17" stroke="currentColor" stroke-width="1.5"/>
@@ -20,6 +23,7 @@
       <span class="language-label">{{ localeName }}</span>
       <svg
         class="chevron"
+        aria-hidden="true"
         :class="{ 'chevron-open': isDropdownOpen }"
         width="16"
         height="16"
@@ -57,6 +61,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from '../composables/useI18n'
+
+defineProps({
+  collapsed: { type: Boolean, default: false }
+})
 
 const { currentLocale, setLocale, availableLocales, localeName } = useI18n()
 
@@ -98,23 +106,24 @@ const selectLanguage = (locale) => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.875rem;
-  background: white;
-  border: 1px solid #e2e8f0;
+  width: 100%;
+  background: transparent;
+  border: 1px solid #334155;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   font-family: inherit;
   font-size: 0.875rem;
-  color: #334155;
+  color: #e2e8f0;
 }
 
 .language-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.12);
+  border-color: #475569;
 }
 
 .globe-icon {
-  color: #64748b;
+  color: #94a3b8;
   flex-shrink: 0;
 }
 
@@ -123,7 +132,8 @@ const selectLanguage = (locale) => {
 }
 
 .chevron {
-  color: #64748b;
+  margin-left: auto;
+  color: #94a3b8;
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
@@ -134,9 +144,9 @@ const selectLanguage = (locale) => {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  bottom: calc(100% + 0.5rem);
+  left: 0;
   right: 0;
-  min-width: 160px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
@@ -179,5 +189,23 @@ const selectLanguage = (locale) => {
 .check-icon {
   color: #2563eb;
   flex-shrink: 0;
+}
+
+/* Icons-only rail: compact button, dropdown opens to the right of the rail */
+.collapsed .language-button {
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.collapsed .language-label,
+.collapsed .chevron {
+  display: none;
+}
+
+.collapsed .dropdown-menu {
+  bottom: 0;
+  left: calc(100% + 0.75rem);
+  right: auto;
+  min-width: 160px;
 }
 </style>
